@@ -38,15 +38,6 @@ namespace MagicVilla_VillaAPI.Controllers
         {
             _logger.LogInformation("Get all villas");
 
-            // 1
-            //return Ok(await _db.Villas.ToListAsync());
-            //IEnumerable<Villa> villaList = await _db.Villas.ToListAsync();
-
-            // 2
-            //IEnumerable<Villa> villaList = await _dbVilla.GetAllAsync();
-            //return Ok(_mapper.Map<List<VillaDTO>>(villaList));
-
-            // 3
             try
             {
                 IEnumerable<Villa> villaList = await _dbVilla.GetAllAsync();
@@ -65,7 +56,7 @@ namespace MagicVilla_VillaAPI.Controllers
 
 
 
-        [HttpGet("{id:int}", Name ="GetVilla")] // perimenei ena id parameter
+        [HttpGet("{id:int}", Name ="GetVilla")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -85,9 +76,8 @@ namespace MagicVilla_VillaAPI.Controllers
                 if (villa == null)
                 {
                     _response.StatusCode = HttpStatusCode.NotFound;
-                    return NotFound(_response); // to gnwsto 404
+                    return NotFound(_response);
                 }
-                //return Ok(_mapper.Map<VillaDTO>(villa));
 
                 _response.Result = _mapper.Map<VillaDTO>(villa);
                 _response.StatusCode = HttpStatusCode.OK;
@@ -154,7 +144,6 @@ namespace MagicVilla_VillaAPI.Controllers
                     return BadRequest();
                 }
 
-                // vriskw thn villa me to id, to idio kai otan exw db
                 var villa = await _dbVilla.GetAsync(u => u.Id == id);
 
                 if (villa == null)
@@ -162,11 +151,8 @@ namespace MagicVilla_VillaAPI.Controllers
                     return NotFound();
                 }
 
-                await _dbVilla.RemoveAsync(villa); // den exei async:(
+                await _dbVilla.RemoveAsync(villa);
 
-
-                // afto epistrefoume synhthws otan kanoume delete kati (204 status code)
-                //return NoContent();
                 _response.StatusCode = HttpStatusCode.NoContent;
                 _response.IsSuccess = true;
                 return Ok(_response);
@@ -181,12 +167,6 @@ namespace MagicVilla_VillaAPI.Controllers
 
 
         }
-
-
-        // genika vazw IActionResult anti gia ActionResult otan kanw delete h update
-        // giati den epistrefw kati kai den xreiazetai to ActionResult
-
-        // epishs to PUT einai gia otan kanw update olo to object, alliws kanw PATCH
 
         [HttpPut("{id:int}", Name ="UpdateVilla")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
